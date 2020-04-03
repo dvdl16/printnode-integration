@@ -1,2 +1,1 @@
 frappe
--e git+https://github.com/fvdsn/py-xml-escpos#egg=pyxmlescpos
