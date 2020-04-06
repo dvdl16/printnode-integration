@@ -29,10 +29,10 @@ from frappe.utils.pdf import get_pdf
 from pdfkit.pdfkit import PDFKit
 from six import string_types
 
-try:
-	from cStringIO import StringIO
-except ImportError:
-	from StringIO import StringIO
+# try:
+	# from cStringIO import StringIO
+# except ImportError:
+	# from StringIO import StringIO
 
 try:
 	from printnodeapi.Gateway import Gateway
