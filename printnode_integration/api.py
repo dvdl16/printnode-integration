@@ -56,7 +56,7 @@ class PDFKit(PDFKit):
 	def to_image(self, path):
 		try:
 			return self.to_pdf(path)
-		except UnicodeDecodeError, e:
+		except UnicodeDecodeError as e:
 			pass
 
 
