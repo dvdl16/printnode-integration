@@ -25,7 +25,7 @@ except ImportError:
 from frappe.utils.jinja import render_template
 from frappe.utils.data import scrub_urls
 from frappe.utils.pdf import get_pdf
-from xmlescpos.escpos import Escpos, StyleStack
+# from xmlescpos.escpos import Escpos, StyleStack
 from pdfkit.pdfkit import PDFKit
 from six import string_types
 
@@ -39,17 +39,17 @@ try:
 except ImportError:
 	from printnodeapi.gateway import Gateway
 
-class IOPrinter(Escpos):
-	def __init__(self):
-		self.slip_sheet_mode = False
-		self.io = StringIO()
-		self.stylestack = StyleStack()
+# class IOPrinter(Escpos):
+	# def __init__(self):
+		# self.slip_sheet_mode = False
+		# self.io = StringIO()
+		# self.stylestack = StyleStack()
 
-	def _raw(self, msg):
-		self.io.write(msg)
+	# def _raw(self, msg):
+		# self.io.write(msg)
 
-	def get_content(self):
-		return self.io.getvalue()
+	# def get_content(self):
+		# return self.io.getvalue()
 
 
 class PDFKit(PDFKit):
