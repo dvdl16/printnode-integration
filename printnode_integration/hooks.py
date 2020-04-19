@@ -42,6 +42,15 @@ app_include_js = "/assets/printnode_integration/js/printnode_integration.js"
 # automatically create page for each record of this doctype
 # website_generators = ["Web Page"]
 
+
+# Custom Jinja Filters
+# ----------
+jenv = {
+	"methods": [
+		"get_qr:printnode_integration.api.get_qr"
+	]
+}
+
 # Installation
 # ------------
 
@@ -119,4 +128,3 @@ doc_events = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "printnode_integration.event.get_events"
 # }
-

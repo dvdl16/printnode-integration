@@ -84,7 +84,7 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		raw = get_pdf(content)
 
 	#frappe.msgprint("<pre>%s</pre>" %raw)
-	
+
 	raw_encoded = raw.encode()
 	return b64encode(raw_encoded)
 
@@ -177,3 +177,22 @@ def get_action_list(dt):
 		order_by= 'idx ASC',
 		limit_page_length=50
 	)
+
+@frappe.whitelist()
+def get_qr(content):
+	import pyqrcode
+	from io import BytesIO
+
+	url = pyqrcode.create(content)
+	stream = BytesIO()
+	url.svg(stream, scale=3)
+	output = stream.getvalue(), 200, {
+		'Content-Type': 'image/svg+xml',
+		'Cache-Control': 'no-cache, no-store, must-revalidate',
+		'Pragma': 'no-cache',
+		'Expires': '0'}
+
+	string = output[0].decode()
+	start = string.find('<svg xmlns=')
+	end = string.find('</svg>') + 6
+	return(string[start:end])
