@@ -9,7 +9,7 @@ import subprocess
 
 from base64 import b64encode, b64decode
 from frappe import _
-from frappe.utils import flt, cint, get_datetime, date_diff, nowdate, now_datetime
+from frappe.utils import flt, cint, get_datetime, date_diff, nowdate, now_datetime, get_url
 try:
 	from frappe.utils.file_manager import get_file
 except ImportError:
@@ -179,13 +179,22 @@ def get_action_list(dt):
 	)
 
 @frappe.whitelist()
-def get_qr(content):
+def get_qr(content, scale, shorten_url=False):
 	import pyqrcode
 	from io import BytesIO
 
+	if shorten_url:
+		short_url = frappe.get_doc({
+			"doctype": "Short URL",
+			"url": content,
+			"docstatus": 1
+		})
+		short_url.insert()
+		content = get_url() + '/desk#Form/Short%20URL/' + short_url.name
+
 	url = pyqrcode.create(content)
 	stream = BytesIO()
-	url.svg(stream, scale=3)
+	url.svg(stream, scale=scale)
 	output = stream.getvalue(), 200, {
 		'Content-Type': 'image/svg+xml',
 		'Cache-Control': 'no-cache, no-store, must-revalidate',
