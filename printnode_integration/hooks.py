@@ -47,7 +47,8 @@ app_include_js = "/assets/printnode_integration/js/printnode_integration.js"
 # ----------
 jenv = {
 	"methods": [
-		"get_qr:printnode_integration.api.get_qr"
+		"get_qr:printnode_integration.api.get_qr",
+		"get_barcode:printnode_integration.api.get_barcode"
 	]
 }
 
