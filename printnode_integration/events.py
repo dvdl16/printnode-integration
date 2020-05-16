@@ -14,7 +14,7 @@ def print_via_printnode( doctype, docname, docevent):
 
 	doc = frappe.get_doc(doctype, docname)
 	ignore_flags = True
-	
+
 	if not ignore_flags:
 		if doc.flags.on_import or doc.flags.ignore_print:
 			return
@@ -34,14 +34,14 @@ def print_via_printnode( doctype, docname, docevent):
 			else:
 				reference_list = [doc]
 			inline_field = d.batch_field.split('.')[-1]
-			api.batch_print_via_printnode(d.name, map(lambda d: frappe._dict(docname=d.get(inline_field)), reference_list))
+			api.batch_print_via_printnode(d.name, map(lambda d: frappe._dict(docname=d.get(inline_field), doctype=d.get('doctype')), reference_list))
 
 def after_insert( doc, handler=None ):
 	enqueue('printnode_integration.events.print_via_printnode', enqueue_after_commit=True, doctype=doc.doctype, docname=doc.name, docevent='Insert', now=True)
 
 def on_update( doc, handler=None ):
 	enqueue('printnode_integration.events.print_via_printnode', enqueue_after_commit=True, doctype=doc.doctype, docname=doc.name, docevent='Update', now=True)
-	
+
 def on_submit(doc, handler=None):
 	print((doc.doctype, doc.name, 'Submit'))
 	enqueue('printnode_integration.events.print_via_printnode', enqueue_after_commit=True, doctype=doc.doctype, docname=doc.name, docevent='Submit', now=True)
@@ -49,6 +49,6 @@ def on_submit(doc, handler=None):
 def on_trash(doc, handler=None):
 	settings = frappe.get_doc('Print Node Settings', 'Print Node Settings')
 	if not settings.api_key or settings.allow_deletion_for_printed_documents:
-		for print_job in frappe.get_all('Print Node Job', fields=['name'], 
+		for print_job in frappe.get_all('Print Node Job', fields=['name'],
 			filters={'ref_type': doc.doctype, 'ref_name': doc.name}):
 			frappe.delete_doc('Print Node Job', print_job.name, ignore_permissions=True)
