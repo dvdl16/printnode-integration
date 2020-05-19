@@ -67,7 +67,10 @@ class Configuration(object):
 def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=False):
 	if is_escpos or is_raw:
 		doc = frappe.get_doc(doctype, docname)
-		template = frappe.db.get_value("Print Format", print_format, "html")
+		content_field = "html"
+		if frappe.db.get_value("Print Format", print_format, "raw_printing"):
+			content_field = "raw_commands"
+		template = frappe.db.get_value("Print Format", print_format, content_field)
 		content = render_template(template, {"doc": doc})
 		if is_escpos:
 			content.replace("<br>", "<br/>")
@@ -79,14 +82,13 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		printer.receipt(content)
 		raw = printer.get_content()
 	elif is_raw:
-		raw = content
+		raw = content.encode()
 	else:
 		raw = get_pdf(content)
 
 	#frappe.msgprint("<pre>%s</pre>" %raw)
 
-	raw_encoded = raw.encode()
-	return b64encode(raw_encoded)
+	return b64encode(raw)
 
 @frappe.whitelist()
 def print_via_printnode(action, **kwargs):
