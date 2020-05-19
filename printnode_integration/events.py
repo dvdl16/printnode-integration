@@ -5,6 +5,7 @@ import json
 import frappe
 from frappe.utils.background_jobs import enqueue
 from . import api
+from frappe.utils import nowdate
 
 def print_via_printnode( doctype, docname, docevent):
 	if frappe.flags.in_import or frappe.flags.in_patch:
@@ -22,10 +23,13 @@ def print_via_printnode( doctype, docname, docevent):
 	if not frappe.db.exists("Print Node Action", {"dt": doc.doctype, "print_on": docevent}):
 		return
 
-	for d in frappe.get_list("Print Node Action", ["name", "ensure_single_print", "allow_inline_batch", "batch_field"], {"dt": doc.doctype, "print_on": docevent}):
+	for d in frappe.get_list("Print Node Action", ["name", "ensure_single_print", "allow_inline_batch", "batch_field", "print_on_condition"], {"dt": doc.doctype, "print_on": docevent}):
 		if docevent == "Update" and d.ensure_single_print and frappe.db.exists("Print Job", d.name):
 			continue
 		if not d.allow_inline_batch:
+			# validate condition
+			if d.print_on_condition and not frappe.safe_eval(d.print_on_condition, None, get_context(doc)):
+				continue
 			api.print_via_printnode(d.name, doctype=doc.doctype, docname=doc.name)
 		else:
 			if '.' in d.batch_field:
@@ -52,3 +56,6 @@ def on_trash(doc, handler=None):
 		for print_job in frappe.get_all('Print Node Job', fields=['name'],
 			filters={'ref_type': doc.doctype, 'ref_name': doc.name}):
 			frappe.delete_doc('Print Node Job', print_job.name, ignore_permissions=True)
+
+def get_context(doc):
+	return {"doc": doc, "nowdate": nowdate, "frappe.utils": frappe.utils}

@@ -5,10 +5,12 @@
 from __future__ import unicode_literals
 import frappe
 import json
+from frappe import _
 
 from printnodeapi import Gateway
 from collections import OrderedDict
 from frappe.model.document import Document
+from frappe.utils import nowdate
 
 capabilities = [
 	"bins", "colate", "copies", "color", "dpis", "extend",
@@ -59,5 +61,19 @@ class PrintNodeSettings(Document):
 			frappe.new_doc("Print Node Hardware").update(h).insert()
 			if "capabilities" in h:
 				h.pop("capabilities")
-		
+
 		self.hardware = json.dumps(hardware)
+
+		self.validate_condition()
+
+	def validate_condition(self):
+		for action in self.actions:
+			temp_doc = frappe.new_doc(action.dt)
+			if action.print_on_condition:
+				try:
+					frappe.safe_eval(action.print_on_condition, None, get_context(temp_doc))
+				except Exception:
+					frappe.throw(_("The Condition '{0}' on Action in Row # {1} is invalid").format(action.print_on_condition, action.idx))
+
+def get_context(doc):
+	return {"doc": doc, "nowdate": nowdate, "frappe.utils": frappe.utils}
