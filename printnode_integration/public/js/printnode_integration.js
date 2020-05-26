@@ -64,7 +64,7 @@ frappe.ui.form.ScriptManager = frappe.ui.form.ScriptManager.extend({
 							"docname": cur_frm.docname
 						}
 					});
-				}, __("Select an Attachment"), __("Print"))
+				}, __("Select an Attachment"), __("Print"));
 			}
 			}
 
@@ -106,21 +106,20 @@ frappe.ui.form.ScriptManager = frappe.ui.form.ScriptManager.extend({
 												}
 												var inline_field = row.batch_field.split(".");
 												inline_field = inline_field.pop();
-												debugger;
 												frappe.call({
 													'method': 'printnode_integration.api.batch_print_via_printnode',
 													'freeze': true,
 													'freeze_message': __('Sending documents to the printer'),
 													'args': {
 														'action': row.name,
-														'docs': reference_list.map((d) => { return {'docname': d[inline_field]}; })
+														'docs': reference_list.map((d) => { return {'docname': d[inline_field], 'doctype': d['doctype']}; })
 													}
 												});
 											}
 										} else {
 											print_attachment(row);
 										}
-									};
+									}
 									let btn = cur_frm.add_custom_button(row.action, handler, __('Print Node Integration'));
 									if (row.hotkey && row.hotkey.length){
 										frappe.ui.keys.on(row.hotkey, function(){
@@ -168,7 +167,7 @@ frappe.views.ListView = class ListView extends frappe.views.ListView {
 		me.page.add_menu_item(__('Print via Print Node'), function(){
 			var items = me.get_checked_items(),
 				valid_docs = items.filter(function(doc){
-					return !is_submittable || doc.docstatus === 1 || 
+					return !is_submittable || doc.docstatus === 1 ||
 						(allow_print_for_cancelled && doc.docstatus == 2) ||
 						(allow_print_for_draft && doc.docstatu == 0) ||
 						frappe.user_roles.includes('Administrator');
