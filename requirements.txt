@@ -1,3 +1,7 @@
 frappe
 pyqrcode
 python-barcode
+Pillow
+zpl
+numpy
+scipy

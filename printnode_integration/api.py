@@ -236,3 +236,56 @@ def shorten_url(content, return_docname=False):
 	else:
 		content = get_url() + '/desk#Form/Short%20URL/' + short_url.name
 	return content
+
+@frappe.whitelist()
+def get_image_zpl(image_path, strip_xaxz_tags=True):
+	import os
+	from PIL import Image, ImageEnhance
+	import zpl
+	from pprint import pprint
+	import numpy as np
+	import scipy.ndimage
+
+	def grayscale(rgb):
+		return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
+
+	def dodge(front,back):
+		result=front*255/(255-back)
+		result[result>255]=255
+		result[back==255]=255
+		return result.astype('uint8')
+
+	settings = frappe.get_single('Print Node Settings');
+
+	# Greyscale
+	start_img = Image.open(image_path)
+	start_img = np.array(start_img)
+	gray_img = grayscale(start_img)
+
+	# Invert image
+	inverted_image = 255 - gray_img
+
+	# Blur Image
+	blur_img = scipy.ndimage.filters.gaussian_filter(inverted_image,sigma=settings.sigma)
+
+	# Dodge and Merge
+	final_img = dodge(blur_img,gray_img)
+	im = Image.fromarray(final_img)
+	im = im.convert("L")
+
+	# Resize and darken image
+	size = settings.image_width, settings.image_height
+	im.thumbnail(size)
+	enhancer = ImageEnhance.Contrast(im)
+	enhanced_im = enhancer.enhance(settings.darkening)
+
+	# Generate ZPL (https://pypi.org/project/zpl/)
+	l = zpl.Label(settings.label_width, settings.label_height)
+	l.origin(settings.origin_x, settings.origin_y)
+	image_width = settings.image_width_on_label
+	image_height = l.write_graphic(enhanced_im,image_width)
+	l.endorigin()
+	zpl_to_return = l.dumpZPL()
+	if strip_xaxz_tags:
+		zpl_to_return = zpl_to_return[3:-3]
+	return(zpl_to_return)
