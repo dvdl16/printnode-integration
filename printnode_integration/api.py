@@ -240,7 +240,7 @@ def shorten_url(content, return_docname=False):
 @frappe.whitelist()
 def get_image_zpl(image_path, strip_xaxz_tags=True):
 	import os
-	from PIL import Image, ImageEnhance
+	from PIL import Image, ImageEnhance, ImageOps
 	import zpl
 	from pprint import pprint
 	import numpy as np
@@ -259,6 +259,7 @@ def get_image_zpl(image_path, strip_xaxz_tags=True):
 
 	# Greyscale
 	start_img = Image.open(image_path)
+	start_img = ImageOps.exif_transpose(start_img) #fix rotation
 	start_img = np.array(start_img)
 	gray_img = grayscale(start_img)
 
