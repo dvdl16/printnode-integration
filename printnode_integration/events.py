@@ -35,6 +35,8 @@ def print_via_printnode( doctype, docname, docevent):
 			if '.' in d.batch_field:
 				table_field = d.batch_field.split('.')[0]
 				reference_list = doc.get(table_field)
+				if d.print_on_condition:
+					reference_list = [row for row in reference_list if frappe.safe_eval(d.print_on_condition, None, get_context(row))]
 			else:
 				reference_list = [doc]
 			inline_field = d.batch_field.split('.')[-1]
