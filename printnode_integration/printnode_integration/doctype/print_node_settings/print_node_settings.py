@@ -69,7 +69,7 @@ class PrintNodeSettings(Document):
 	def validate_condition(self):
 		for action in self.actions:
 			temp_doc = frappe.new_doc(action.dt)
-			if action.print_on_condition:
+			if action.print_on_condition and not action.allow_inline_batch:
 				try:
 					frappe.safe_eval(action.print_on_condition, None, get_context(temp_doc))
 				except Exception:
