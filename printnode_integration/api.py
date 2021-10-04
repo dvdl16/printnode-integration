@@ -131,7 +131,7 @@ def print_via_printnode(action, **kwargs):
 			printer=int(printer),
 			job_type="raw" if raw else "pdf",
 			title=action.action + ' (' + kwargs.get("doctype") + ': ' + kwargs.get("docname") + ')',
-			base64=print_content,
+			base64=print_content.decode('utf-8'),
 			options=print_settings
 		)
 	else:
