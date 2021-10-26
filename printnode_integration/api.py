@@ -114,7 +114,14 @@ def print_via_printnode(action, **kwargs):
 	if 'collate' in print_settings:
 		print_settings['collate'] = bool(print_settings['collate'])
 
-	printer = frappe.db.get_value("Print Node Hardware", action.printer, "hw_id")
+	printer_name = action.printer
+
+	# If a specific printer is defined for this user for this action, rather use this printer
+	user_printer = frappe.db.get_value("Print Node Settings User", {"print_node_action": action.name,
+																	"user": frappe.session.user}, "default_printer")
+	if user_printer:
+		printer_name = user_printer
+	printer = frappe.db.get_value("Print Node Hardware", printer_name, "hw_id")
 
 	gateway = Gateway(apikey=settings.api_key)
 

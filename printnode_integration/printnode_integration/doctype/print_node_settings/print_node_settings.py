@@ -66,6 +66,9 @@ class PrintNodeSettings(Document):
 
 		self.validate_condition()
 
+		for d in self.actions:
+			d.name_display = d.name
+
 	def validate_condition(self):
 		for action in self.actions:
 			temp_doc = frappe.new_doc(action.dt)
