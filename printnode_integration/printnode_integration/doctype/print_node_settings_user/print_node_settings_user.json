@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "creation": "2021-10-26 21:08:47.633678",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "print_node_action",
+  "dt",
+  "print_format",
+  "user",
+  "default_printer"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "print_node_action",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Print Node Action",
+   "options": "Print Node Action"
+  },
+  {
+   "columns": 2,
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "columns": 4,
+   "fieldname": "default_printer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Print Node Hardware",
+   "options": "Print Node Hardware"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "print_node_action.dt",
+   "fieldname": "dt",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "DocType",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "print_node_action.print_format",
+   "fieldname": "print_format",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Print Format",
+   "options": "Print Format",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2021-10-26 21:25:02.603516",
+ "modified_by": "Administrator",
+ "module": "Printnode Integration",
+ "name": "Print Node Settings User",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
