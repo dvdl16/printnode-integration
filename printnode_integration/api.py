@@ -71,6 +71,15 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		if frappe.db.get_value("Print Format", print_format, "raw_printing"):
 			content_field = "raw_commands"
 		template = frappe.db.get_value("Print Format", print_format, content_field)
+
+		# Parse JSON if docfields are of type "Code"
+		meta = frappe.get_meta(doctype)
+		for code_field in meta.get_code_fields():
+			if code_field.options == 'JSON':
+				string = getattr(doc, code_field.fieldname, "{}")
+				parsed_dict = json.loads(string)
+				setattr(doc, code_field.fieldname, parsed_dict)
+
 		content = render_template(template, {"doc": doc})
 		if is_escpos:
 			content.replace("<br>", "<br/>")
