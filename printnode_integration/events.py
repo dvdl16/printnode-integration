@@ -15,6 +15,7 @@ def print_via_printnode( doctype, docname, docevent):
 
 	doc = frappe.get_doc(doctype, docname)
 	ignore_flags = True
+	eval_globals = {'json': json}
 
 	if not ignore_flags:
 		if doc.flags.on_import or doc.flags.ignore_print:
@@ -28,7 +29,7 @@ def print_via_printnode( doctype, docname, docevent):
 			continue
 		if not d.allow_inline_batch:
 			# validate condition
-			if d.print_on_condition and not frappe.safe_eval(d.print_on_condition, None, get_context(doc)):
+			if d.print_on_condition and not frappe.safe_eval(d.print_on_condition, eval_globals, get_context(doc)):
 				continue
 			api.print_via_printnode(d.name, doctype=doc.doctype, docname=doc.name)
 		else:
@@ -36,7 +37,7 @@ def print_via_printnode( doctype, docname, docevent):
 				table_field = d.batch_field.split('.')[0]
 				reference_list = doc.get(table_field)
 				if d.print_on_condition:
-					reference_list = [row for row in reference_list if frappe.safe_eval(d.print_on_condition, None, get_context(row))]
+					reference_list = [row for row in reference_list if frappe.safe_eval(d.print_on_condition, eval_globals, get_context(row))]
 			else:
 				reference_list = [doc]
 			inline_field = d.batch_field.split('.')[-1]
