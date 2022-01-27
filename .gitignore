@@ -5,3 +5,4 @@
 tags
 printnode_integration/docs/current
 .idea
+printnode_integration/templates/pages/__pycache__
