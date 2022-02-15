@@ -85,7 +85,8 @@ doc_events = {
 		"after_insert": "printnode_integration.events.after_insert",
 		"on_update": "printnode_integration.events.on_update",
 		"on_submit": "printnode_integration.events.on_submit",
-		"on_trash": "printnode_integration.events.on_trash"
+		"on_trash": "printnode_integration.events.on_trash",
+		"on_update_after_submit": "printnode_integration.events.on_update_after_submit"
 	}
 }
 
