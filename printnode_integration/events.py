@@ -25,7 +25,7 @@ def print_via_printnode( doctype, docname, docevent):
 		return
 
 	for d in frappe.get_list("Print Node Action", ["name", "ensure_single_print", "allow_inline_batch", "batch_field", "print_on_condition"], {"dt": doc.doctype, "print_on": docevent}):
-		if docevent == "Update" and d.ensure_single_print and frappe.db.exists("Print Job", d.name):
+		if docevent in ["Update", "UpdateAfterSubmit"] and d.ensure_single_print and frappe.db.exists("Print Job", d.name):
 			continue
 		if not d.allow_inline_batch:
 			# validate condition
@@ -48,6 +48,9 @@ def after_insert( doc, handler=None ):
 
 def on_update( doc, handler=None ):
 	enqueue('printnode_integration.events.print_via_printnode', enqueue_after_commit=True, doctype=doc.doctype, docname=doc.name, docevent='Update', now=True)
+
+def on_update_after_submit( doc, handler=None ):
+	enqueue('printnode_integration.events.print_via_printnode', enqueue_after_commit=True, doctype=doc.doctype, docname=doc.name, docevent='UpdateAfterSubmit', now=True)
 
 def on_submit(doc, handler=None):
 	print((doc.doctype, doc.name, 'Submit'))
