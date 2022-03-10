@@ -6,6 +6,7 @@ import datetime
 import frappe
 import hashlib
 import subprocess
+import re
 
 from base64 import b64encode, b64decode
 from frappe import _
@@ -174,6 +175,15 @@ def print_via_printnode(action, **kwargs):
 		"job_owner": frappe.local.session.user,
 		"print_timestamp": now_datetime()
 	})
+	# Try to extract info from raw ZPL
+	if action.is_raw_text:
+		raw_print_job_content = b64decode(print_content).decode('utf-8').strip()
+		pattern = r'\^PQ(\d),0,1,Y\^XZ'
+		result = re.search(pattern, raw_print_job_content)
+		job.nr_of_labels = result.group(1) if result is not None else None
+		if action.store_raw_print_job_content:
+			job.raw_print_job_content = raw_print_job_content
+
 	job.flags.ignore_permissions = True
 	job.flags.ignore_links = True
 	job.flags.ignore_validate = True
