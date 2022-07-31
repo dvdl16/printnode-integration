@@ -15,6 +15,8 @@
   "actions",
   "user_printer_overrides_section",
   "users",
+  "location_printer_overrides_section",
+  "locations",
   "zpl_section",
   "image_width",
   "image_height",
@@ -167,12 +169,23 @@
    "fieldtype": "Table",
    "label": "Users",
    "options": "Print Node Settings User"
+  },
+  {
+   "fieldname": "location_printer_overrides_section",
+   "fieldtype": "Section Break",
+   "label": "Location Printer Overrides"
+  },
+  {
+   "fieldname": "locations",
+   "fieldtype": "Table",
+   "label": "Locations",
+   "options": "Print Node Settings Location"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-10-26 21:09:37.821823",
+ "modified": "2022-07-31 20:53:17.042067",
  "modified_by": "Administrator",
  "module": "Printnode Integration",
  "name": "Print Node Settings",
