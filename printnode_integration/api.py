@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 import json
+from pymysql import OperationalError
 import requests
 import datetime
 import frappe
@@ -131,6 +132,17 @@ def print_via_printnode(action, **kwargs):
 																	"user": frappe.session.user}, "default_printer")
 	if user_printer:
 		printer_name = user_printer
+	else:
+		# If a specific printer is defined for the linked location for this action, rather use this printer
+		if kwargs.get('doctype') == "Stock Entry Detail":
+			location_name = get_work_order_linked_location(kwargs.get('docname'))
+			if location_name:
+				location_printer = frappe.db.get_value("Print Node Settings Location",
+														{"print_node_action": action.name,
+														"location": location_name}, "default_printer")
+				if location_printer:
+					printer_name = location_printer
+
 	printer = frappe.db.get_value("Print Node Hardware", printer_name, "hw_id")
 
 	gateway = Gateway(apikey=settings.api_key)
@@ -316,3 +328,27 @@ def get_image_zpl(image_path, strip_xaxz_tags=True):
 	if strip_xaxz_tags:
 		zpl_to_return = zpl_to_return[3:-3]
 	return(zpl_to_return)
+
+
+def get_work_order_linked_location(stock_entry_detail_name: str):
+	try:
+		result = frappe.db.sql("""
+			SELECT t_wo.sg_default_production_area
+				FROM `tabStock Entry Detail` t_sed
+				INNER JOIN `tabStock Entry` t_se
+					ON t_se.name = t_sed.parent 
+				INNER JOIN `tabWork Order` t_wo
+					ON t_wo.name = t_se.work_order
+				WHERE 
+					t_sed.name = '{stock_entry_detail_name}'
+					AND t_se.stock_entry_type = 'Manufacture';
+		""".format(stock_entry_detail_name=stock_entry_detail_name), as_dict=True)
+		if len(result) == 0:
+			return None
+		return result[0]['sg_default_production_area']
+	except OperationalError as e:
+		frappe.log_error(
+			title=_("Error while retrieving linked location for Manufacture Stock Entry"),
+			message=json.dumps(e.args),
+		)
+		return None
