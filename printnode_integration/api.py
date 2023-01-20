@@ -79,7 +79,7 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		for code_field in meta.get_code_fields():
 			if code_field.options == 'JSON':
 				string = getattr(doc, code_field.fieldname, "{}")
-				parsed_dict = json.loads(string)
+				parsed_dict = json.loads(string) if string else {}
 				setattr(doc, code_field.fieldname, parsed_dict)
 
 		content = render_template(template, {"doc": doc})
