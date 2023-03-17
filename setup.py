@@ -22,7 +22,7 @@ setup(
 	zip_safe=False,
 	include_package_data=True,
 	install_requires=[
-		'PrintNode-Python @ git+https://github.com/PrintNode/PrintNode-Python.git#egg=printnodeapi',
+		'printnodeapi @ git+https://github.com/PrintNode/PrintNode-Python.git#egg=printnodeapi',
 		'frappe',
 		'pyqrcode',
 		'python-barcode',
