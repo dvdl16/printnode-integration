@@ -1,4 +1,5 @@
 frappe.provide('printnode_integration');
+frappe.provide('frappe.ui.form');
 
 printnode_integration.evaluate_depends_on = function(expression, doc){
 	var out = null;
@@ -21,9 +22,9 @@ printnode_integration.evaluate_depends_on = function(expression, doc){
 	return out;
 };
 
-frappe.ui.form.ScriptManager = frappe.ui.form.ScriptManager.extend({
-	get_handlers: function(event_name, doctype, name, callback){
-		var handlers = this._super(event_name, doctype, name, callback),
+frappe.ui.form.ScriptManager = class ScriptManager extends frappe.ui.form.ScriptManager {
+	get_handlers(event_name, doctype, name, callback){
+		var handlers = super.get_handlers(event_name, doctype, name, callback),
 			me = this;
 
 		function print_attachment(row){
@@ -133,7 +134,7 @@ frappe.ui.form.ScriptManager = frappe.ui.form.ScriptManager.extend({
 		}
 		return handlers;
 	}
-});
+};
 
 
 frappe.views.ListView = class ListView extends frappe.views.ListView {
