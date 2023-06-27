@@ -1,0 +1,17 @@
+@media (max-width: 600px) {
+    div.custom-actions {
+        display: block !important;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 766px) {
+    div.custom-actions {
+        display: block !important;
+    }
+}
+
+@media (min-width: 766px) {
+    div.custom-actions {
+        display: block !important;
+    }
+}
