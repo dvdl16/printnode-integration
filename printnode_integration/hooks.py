@@ -15,7 +15,7 @@ app_license = "MIT"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/printnode_integration/css/printnode_integration.css"
+app_include_css = "/assets/printnode_integration/css/printnode_integration.css"
 app_include_js = "/assets/printnode_integration/js/printnode_integration.js"
 
 # include js, css files in header of web template
