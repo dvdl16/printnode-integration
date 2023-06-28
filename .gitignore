@@ -6,3 +6,4 @@ tags
 printnode_integration/docs/current
 .idea
 printnode_integration/templates/pages/__pycache__
+printnode_integration/public/dist
