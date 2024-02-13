@@ -29,7 +29,9 @@ def print_via_printnode( doctype, docname, docevent):
 			continue
 		if not d.allow_inline_batch:
 			# validate condition
-			if d.print_on_condition and not frappe.safe_eval(d.print_on_condition, eval_globals, get_context(doc)):
+			# allow eval usage to use json in scripts: https://github.com/dvdl16/fssc_22000/issues/292
+			# nosemgrep
+			if d.print_on_condition and not eval(d.print_on_condition, eval_globals, get_context(doc)):
 				continue
 			api.print_via_printnode(d.name, doctype=doc.doctype, docname=doc.name)
 		else:
@@ -37,7 +39,9 @@ def print_via_printnode( doctype, docname, docevent):
 				table_field = d.batch_field.split('.')[0]
 				reference_list = doc.get(table_field)
 				if d.print_on_condition:
-					reference_list = [row for row in reference_list if frappe.safe_eval(d.print_on_condition, eval_globals, get_context(row))]
+					# allow eval usage to use json in scripts: https://github.com/dvdl16/fssc_22000/issues/292
+					# nosemgrep
+					reference_list = [row for row in reference_list if eval(d.print_on_condition, eval_globals, get_context(row))]
 			else:
 				reference_list = [doc]
 			inline_field = d.batch_field.split('.')[-1]
