@@ -164,12 +164,14 @@ def print_via_printnode(action, **kwargs):
 			options=print_settings
 		)
 	else:
-		print_content = b64encode(get_file("File", kwargs.get("filename"))[1])
+		file_name, file_content = get_file(kwargs.get("filename"))
+		print_content = b64encode(file_content)
 		gateway.PrintJob(
 			printer=int(printer),
-			job_type="pdf" if kwargs.get("filename", "").lower().endswith(".pdf") else "raw",
-			base64=print_content,
-			options=print_settings
+			job_type="pdf" if file_name.lower().endswith(".pdf") else "raw",
+			base64=print_content.decode('utf-8'),
+			options=print_settings,
+			title=f'PrintJob ({kwargs.get("doctype")}: {kwargs.get("docname")} | {file_name})',
 		)
 
 	job = frappe.new_doc("Print Node Job").update({
