@@ -86,7 +86,11 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		if is_escpos:
 			content.replace("<br>", "<br/>")
 	else:
-		content = frappe.get_print(doctype, docname, print_format)
+		# If doctype has a 'language' field, use it to translate the content
+		lang_field = frappe.get_meta(doctype).get_field("language")
+		lang = frappe.db.get_value(doctype, docname, lang_field.fieldname) if lang_field else None
+		result_content = frappe.attach_print(doctype, docname, print_format=print_format, lang=lang)
+		content = result_content['fcontent']
 
 	if is_escpos:
 		printer = IOPrinter()
