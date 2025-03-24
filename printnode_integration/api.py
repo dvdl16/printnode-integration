@@ -99,7 +99,7 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 	elif is_raw:
 		raw = content.encode()
 	else:
-		raw = get_pdf(content)
+		raw = content
 
 	#frappe.msgprint("<pre>%s</pre>" %raw)
 
