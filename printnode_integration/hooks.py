@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from . import __version__ as app_version
 
 app_name = "printnode_integration"
 app_title = "Printnode Integration"
@@ -30,7 +29,7 @@ app_include_js = "/assets/printnode_integration/js/printnode_integration.js"
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# 	"Role": "home_page"
 # }
 
 # Website user home page (by function)
@@ -48,7 +47,7 @@ app_include_js = "/assets/printnode_integration/js/printnode_integration.js"
 jinja = {
 	"methods": [
 		"printnode_integration.jinja_methods.get_barcode",
-		"printnode_integration.jinja_methods.get_qr"
+		"printnode_integration.jinja_methods.get_qr",
 	]
 }
 
@@ -86,7 +85,7 @@ doc_events = {
 		"on_update": "printnode_integration.events.on_update",
 		"on_submit": "printnode_integration.events.on_submit",
 		"on_trash": "printnode_integration.events.on_trash",
-		"on_update_after_submit": "printnode_integration.events.on_update_after_submit"
+		"on_update_after_submit": "printnode_integration.events.on_update_after_submit",
 	}
 }
 
@@ -95,7 +94,7 @@ doc_events = {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
-#	}
+# 	}
 # }
 
 # Scheduled Tasks
