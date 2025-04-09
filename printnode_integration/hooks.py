@@ -122,7 +122,7 @@ doc_events = {
 # Testing
 # -------
 
-# before_tests = "printnode_integration.install.before_tests"
+before_tests = "printnode_integration.utils.before_tests"
 
 # Overriding Whitelisted Methods
 # ------------------------------
