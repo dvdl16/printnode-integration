@@ -1,8 +1,0 @@
-frappe
-pyqrcode
-python-barcode
-Pillow
-zpl
-numpy
-scipy
-git+https://github.com/PrintNode/PrintNode-Python.git#egg=printnodeapi

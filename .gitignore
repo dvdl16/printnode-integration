@@ -4,6 +4,11 @@
 *.swp
 tags
 printnode_integration/docs/current
-.idea
-printnode_integration/templates/pages/__pycache__
+node_modules/
+cypress/videos
+cypress/screenshots
+printnode_integration/public/node_modules
 printnode_integration/public/dist
+
+# Package management is managed by bench
+yarn.lock
