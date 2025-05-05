@@ -13,7 +13,7 @@ from . import api
 
 
 def print_via_printnode(doctype, docname, docevent):
-	if frappe.flags.in_import or frappe.flags.in_patch:
+	if frappe.flags.in_import or frappe.flags.in_patch or is_virtual_doctype(doctype):
 		return
 	if not frappe.db.exists(doctype, docname):
 		enqueue(
