@@ -1,6 +1,6 @@
 ## Printnode Integration
 
-![CI workflow](https://github.com/dvdl16/printnode_integration/actions/workflows/ci.yml/badge.svg?branch=version-15)
+[![CI workflow](https://github.com/dvdl16/printnode-integration/actions/workflows/ci.yml/badge.svg?branch=version-15)](https://github.com/dvdl16/printnode-integration/actions/workflows/ci.yml)
 
 < codecov badge here >
 
