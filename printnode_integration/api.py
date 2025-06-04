@@ -64,7 +64,15 @@ class Configuration(object):
 	pass
 
 
-def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=False):
+def get_print_content(
+	print_format,
+	doctype,
+	docname,
+	is_escpos=False,
+	is_raw=False,
+	print_letterhead: bool = True,
+	letterhead: str = None,
+):
 	if is_escpos or is_raw:
 		doc = frappe.get_doc(doctype, docname)
 		content_field = "html"
@@ -87,7 +95,14 @@ def get_print_content(print_format, doctype, docname, is_escpos=False, is_raw=Fa
 		# If doctype has a 'language' field, use it to translate the content
 		lang_field = frappe.get_meta(doctype).get_field("language")
 		lang = frappe.db.get_value(doctype, docname, lang_field.fieldname) if lang_field else None
-		result_content = frappe.attach_print(doctype, docname, print_format=print_format, lang=lang)
+		result_content = frappe.attach_print(
+			doctype,
+			docname,
+			print_format=print_format,
+			lang=lang,
+			print_letterhead=print_letterhead,
+			letterhead=letterhead,
+		)
 		content = result_content["fcontent"]
 
 	if is_escpos:
@@ -156,6 +171,8 @@ def print_via_printnode(action, **kwargs):
 			kwargs.get("docname"),
 			action.is_xml_esc_pos,
 			action.is_raw_text,
+			print_letterhead=action.apply_letter_head,
+			letterhead=action.letter_head,
 		)
 		raw = action.is_xml_esc_pos or action.is_raw_text
 		gateway.PrintJob(
