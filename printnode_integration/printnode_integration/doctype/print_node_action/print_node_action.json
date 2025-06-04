@@ -13,6 +13,8 @@
   "print_format",
   "is_xml_esc_pos",
   "is_raw_text",
+  "apply_letter_head",
+  "letter_head",
   "print_on",
   "print_on_condition",
   "ensure_single_print",
@@ -176,17 +178,35 @@
    "fieldname": "store_raw_print_job_content",
    "fieldtype": "Check",
    "label": "Store Raw Print Job Content"
+  },
+  {
+   "default": "1",
+   "depends_on": "eval: doc.is_raw_text == 0 && doc.printable_type == \"Print Format\"",
+   "fieldname": "apply_letter_head",
+   "fieldtype": "Check",
+   "label": "Apply Letter Head"
+  },
+  {
+   "depends_on": "eval: doc.apply_letter_head && doc.is_raw_text == 0 && doc.printable_type == \"Print Format\"",
+   "description": "If blank, default Letter Head will be used",
+   "fieldname": "letter_head",
+   "fieldtype": "Link",
+   "label": "Letter Head",
+   "options": "Letter Head"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-03-10 17:29:26.027068",
+ "modified": "2025-06-04 14:38:08.658044",
  "modified_by": "Administrator",
  "module": "Printnode Integration",
  "name": "Print Node Action",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

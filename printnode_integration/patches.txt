@@ -1,2 +1,3 @@
 execute:frappe.reload_doc("printnode_integration", "doctype", "print_node_action")
 printnode_integration.patches.deprecate_print_on_submit
+printnode_integration.patches.set_letter_head_on_actions
