@@ -1,8 +1,8 @@
 name: Deploy Docs
-on:
-  push:
-    branches:
-      - version-15
+# on:
+#   push:
+#     branches:
+#       - version-15
 
 jobs:
   deploy:
