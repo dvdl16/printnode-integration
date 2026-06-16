@@ -74,57 +74,66 @@ def print_via_printnode(doctype, docname, docevent):
 			)
 
 
+PRINT_ACTION_CACHE_KEY = "printnode_active_actions"
+
+
+def _active_print_actions():
+	"""Set of "<doctype>::<print_on>" pairs that have a Print Node Action.
+
+	Cached in redis; rebuilt lazily and invalidated by
+	clear_print_action_cache() whenever Print Node Settings (which owns the
+	Action child table) is saved.
+	"""
+	actions = frappe.cache.get_value(PRINT_ACTION_CACHE_KEY)
+	if actions is None:
+		actions = {
+			f"{d.dt}::{d.print_on}"
+			for d in frappe.get_all("Print Node Action", fields=["dt", "print_on"])
+			if d.dt and d.print_on
+		}
+		frappe.cache.set_value(PRINT_ACTION_CACHE_KEY, actions)
+	return actions
+
+
+def _enqueue_print(doc, docevent):
+	# cheap redis set lookup; filters out the ~all doctypes with no action
+	if f"{doc.doctype}::{docevent}" not in _active_print_actions():
+		return
+	if is_virtual_doctype(doc.doctype):
+		return
+	enqueue(
+		"printnode_integration.events.print_via_printnode",
+		enqueue_after_commit=True,
+		doctype=doc.doctype,
+		docname=doc.name,
+		docevent=docevent,
+		now=True,
+	)
+
+
+def clear_print_action_cache(doc=None, method=None):
+	frappe.cache.delete_value(PRINT_ACTION_CACHE_KEY)
+
+
 def after_insert(doc, handler=None):
-	if not is_virtual_doctype(doc.doctype):
-		enqueue(
-			"printnode_integration.events.print_via_printnode",
-			enqueue_after_commit=True,
-			doctype=doc.doctype,
-			docname=doc.name,
-			docevent="Insert",
-			now=True,
-		)
+	_enqueue_print(doc, "Insert")
 
 
 def on_update(doc, handler=None):
-	if not is_virtual_doctype(doc.doctype):
-		enqueue(
-			"printnode_integration.events.print_via_printnode",
-			enqueue_after_commit=True,
-			doctype=doc.doctype,
-			docname=doc.name,
-			docevent="Update",
-			now=True,
-		)
+	_enqueue_print(doc, "Update")
 
 
 def on_update_after_submit(doc, handler=None):
-	if not is_virtual_doctype(doc.doctype):
-		enqueue(
-			"printnode_integration.events.print_via_printnode",
-			enqueue_after_commit=True,
-			doctype=doc.doctype,
-			docname=doc.name,
-			docevent="UpdateAfterSubmit",
-			now=True,
-		)
+	_enqueue_print(doc, "UpdateAfterSubmit")
 
 
 def on_submit(doc, handler=None):
-	if not is_virtual_doctype(doc.doctype):
-		enqueue(
-			"printnode_integration.events.print_via_printnode",
-			enqueue_after_commit=True,
-			doctype=doc.doctype,
-			docname=doc.name,
-			docevent="Submit",
-			now=True,
-		)
+	_enqueue_print(doc, "Submit")
 
 
 def on_trash(doc, handler=None):
 	if not is_virtual_doctype(doc.doctype):
-		settings = frappe.get_doc("Print Node Settings", "Print Node Settings")
+		settings = frappe.get_cached_doc("Print Node Settings", "Print Node Settings")
 		if not settings.api_key or settings.allow_deletion_for_printed_documents:
 			for print_job in frappe.get_all(
 				"Print Node Job", fields=["name"], filters={"ref_type": doc.doctype, "ref_name": doc.name}

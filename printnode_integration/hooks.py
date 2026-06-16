@@ -86,7 +86,10 @@ doc_events = {
 		"on_submit": "printnode_integration.events.on_submit",
 		"on_trash": "printnode_integration.events.on_trash",
 		"on_update_after_submit": "printnode_integration.events.on_update_after_submit",
-	}
+	},
+	"Print Node Settings": {
+		"on_update": "printnode_integration.events.clear_print_action_cache",
+	},
 }
 
 # doc_events = {
