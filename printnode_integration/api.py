@@ -137,6 +137,9 @@ def print_via_printnode(action, **kwargs):
 	if "collate" in print_settings:
 		print_settings["collate"] = bool(print_settings["collate"])
 
+	if print_settings.pop("greyscale", False):
+		print_settings["color"] = False
+
 	printer_name = action.printer
 
 	# If a specific printer is defined for this user for this action, rather use this printer
