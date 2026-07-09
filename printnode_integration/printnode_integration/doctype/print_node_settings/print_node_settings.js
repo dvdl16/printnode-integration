@@ -100,6 +100,8 @@ frappe.ui.form.on("Print Node Action", "set_print_job_options", function(frm, cd
 			"A set of pages to print from a PDF. A few quick examples <br>E.g. 1,3 prints pages 1 and 3. <br>-5 prints pages 1 through 5 inclusive. <br>- prints all pages. <br>Different components can be combined with a comma. <br>1,3- prints all pages except page 2."), "default": capabilities.default},
 		{"fieldtype": "Column Break"},
 		{"fieldtype": "Check", "label": __("Collate"), "fieldname": "collate", "default": capabilities.collate},
+		{"fieldtype": "Check", "label": __("Greyscale"), "fieldname": "greyscale", "default": capabilities.greyscale, "description": __(
+			"Print in greyscale/monochrome instead of colour. Only takes effect on Windows.")},
 		{"fieldtype": "Select", "label": __("Duplex"), "fieldname": "dupplex", "options": [
 			null,
 			{"label": __("Long Edge"), "value": "long-edge"},
